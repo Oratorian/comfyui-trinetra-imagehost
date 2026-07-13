@@ -37,23 +37,26 @@ app.registerExtension({
             const baseUrl = findWidget(this, "base_url");
             if (!apiKey) return r;
 
-            // The info box.
+            // The info box. Generous padding + vertical margins so it doesn't
+            // crowd the api_key field below it.
             const box = document.createElement("div");
             box.style.cssText =
-                "font-size:11px;line-height:1.4;padding:6px 8px;margin:2px 0;" +
-                "border:1px solid rgba(120,160,255,0.4);border-radius:6px;" +
-                "background:rgba(90,130,255,0.10);color:#cbd6ff;";
+                "box-sizing:border-box;font-size:11px;line-height:1.5;" +
+                "padding:9px 11px;margin:8px 4px 10px 4px;" +
+                "border:1px solid rgba(120,160,255,0.45);border-radius:7px;" +
+                "background:rgba(90,130,255,0.12);color:#cbd6ff;";
 
             const link = document.createElement("a");
             link.textContent = "🔑 Get your API key here";
             link.target = "_blank";
             link.rel = "noopener noreferrer";
             link.style.cssText =
-                "color:#8fb4ff;font-weight:600;text-decoration:underline;cursor:pointer;";
+                "display:inline-block;color:#8fb4ff;font-weight:600;" +
+                "text-decoration:underline;cursor:pointer;";
 
             const hint = document.createElement("div");
             hint.textContent = "Open the API tab, then “Create key” (starts with tri_).";
-            hint.style.cssText = "margin-top:2px;opacity:0.8;";
+            hint.style.cssText = "margin-top:5px;opacity:0.85;";
 
             box.appendChild(link);
             box.appendChild(hint);
@@ -75,6 +78,12 @@ app.registerExtension({
             const linkWidget = this.addDOMWidget("apikey_link", "note", box, {
                 serialize: false,
             });
+
+            // Reserve enough vertical space so the box isn't clipped or crowded
+            // by the api_key field below it. Without an explicit height, a DOM
+            // "note" widget collapses to a single row and overlaps its neighbour.
+            const BOX_HEIGHT = 62; // px: fits link + hint + padding + margins
+            linkWidget.computeSize = () => [0, BOX_HEIGHT];
 
             // Position the box directly ABOVE the api_key widget.
             try {
