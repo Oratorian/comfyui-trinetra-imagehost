@@ -27,3 +27,4 @@ __pycache__/
 .ruff_cache/
 build/
 dist/
+node.zip
