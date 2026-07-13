@@ -37,12 +37,19 @@ app.registerExtension({
             const baseUrl = findWidget(this, "base_url");
             if (!apiKey) return r;
 
-            // The info box. Generous padding + vertical margins so it doesn't
-            // crowd the api_key field below it.
+            // ComfyUI stretches a DOM widget's element to fill its reserved row
+            // and ignores the element's own margins for layout. So we use a
+            // TRANSPARENT wrapper that fills the row, with real padding that
+            // creates visible gaps around the styled box inside it.
+            const wrap = document.createElement("div");
+            wrap.style.cssText =
+                "box-sizing:border-box;width:100%;height:100%;" +
+                "padding:6px 4px 12px 4px;"; // <- bottom pad = the gap to api_key
+
             const box = document.createElement("div");
             box.style.cssText =
                 "box-sizing:border-box;font-size:11px;line-height:1.5;" +
-                "padding:9px 11px;margin:8px 4px 10px 4px;" +
+                "padding:9px 11px;" +
                 "border:1px solid rgba(120,160,255,0.45);border-radius:7px;" +
                 "background:rgba(90,130,255,0.12);color:#cbd6ff;";
 
@@ -60,6 +67,7 @@ app.registerExtension({
 
             box.appendChild(link);
             box.appendChild(hint);
+            wrap.appendChild(box);
 
             const syncHref = () => {
                 link.href = appOrigin(baseUrl ? baseUrl.value : DEFAULT_BASE);
@@ -75,15 +83,15 @@ app.registerExtension({
                 };
             }
 
-            const linkWidget = this.addDOMWidget("apikey_link", "note", box, {
+            const linkWidget = this.addDOMWidget("apikey_link", "note", wrap, {
                 serialize: false,
             });
 
-            // Reserve enough vertical space so the box isn't clipped or crowded
-            // by the api_key field below it. Without an explicit height, a DOM
-            // "note" widget collapses to a single row and overlaps its neighbour.
-            const BOX_HEIGHT = 62; // px: fits link + hint + padding + margins
-            linkWidget.computeSize = () => [0, BOX_HEIGHT];
+            // Reserve vertical space for the wrapper: box content (~44px for
+            // link + hint + box padding) plus the wrapper's 6px top / 12px bottom
+            // padding. The extra bottom padding is the visible gap to api_key.
+            const ROW_HEIGHT = 74; // px
+            linkWidget.computeSize = () => [0, ROW_HEIGHT];
 
             // Position the box directly ABOVE the api_key widget.
             try {
