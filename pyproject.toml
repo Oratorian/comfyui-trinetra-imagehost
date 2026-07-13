@@ -1,0 +1,39 @@
+# Packaging + ComfyUI-Manager metadata for the Trinetra uploader node.
+#
+# Tests live under tests/ in the repository but are EXCLUDED from any built
+# package (wheel/sdist) via [tool.setuptools] below, so they don't ship to
+# users while remaining available to contributors and CI.
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "comfyui-trinetra-imagehost"
+version = "0.1.0"
+description = "ComfyUI node to upload images to the Trinetra image host, with rate-limit-aware backoff, an expiry picker, and a live folder dropdown."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = [
+    "Pillow>=9.0.0",
+    "numpy>=1.22.0",
+]
+
+[project.urls]
+Repository = "https://github.com/Oratorian/comfyui-trinetra-imagehost"
+
+# ComfyUI-Manager reads this table to register the node pack.
+[tool.comfy]
+PublisherId = "oratorian"
+DisplayName = "Trinetra Image Host Uploader"
+Icon = ""
+
+# Ship only the runtime modules + web/ assets. The tests/ folder is never
+# listed here, so it stays out of any built wheel/sdist.
+[tool.setuptools]
+py-modules = ["__init__", "nodes", "trinetra_client", "server_routes"]
+
+# If package discovery ever runs, keep tests out of the build.
+[tool.setuptools.packages.find]
+exclude = ["tests", "tests.*"]

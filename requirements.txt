@@ -1,0 +1,4 @@
+# Trinetra uploader relies only on Pillow + numpy, both already present in a
+# standard ComfyUI install. Listed here for completeness / standalone testing.
+Pillow>=9.0.0
+numpy>=1.22.0
