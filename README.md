@@ -1,7 +1,7 @@
 # ComfyUI Trinetra Image Host Uploader
 
-A ComfyUI custom node that uploads images to a [Trinetra](https://trinetra.mahesvara.cloud)
-image host using your API key, and **respects rate limits** by backing off on
+A ComfyUI custom node that uploads images to [Trinetra](https://trinetra.mahesvara.cloud)
+image hosting using your API key, and **respects rate limits** by backing off on
 `429` (honoring `Retry-After` when present) and retrying transient server errors.
 
 ## Node
